@@ -4,7 +4,7 @@ share: true
 Большинство инструментов, которые Microsoft делают для dotnet можно назвать "It's just work". Но иногда стандартной конфигурации недостаточно и приходиться более подробно разбираться в проблеме. Этот пост как раз о том, как стандартного процесса сборки солюшена оказалось недостаточно и пришлось его пересоздать. И заодно узнать много нового про билд процесс.
 
 - [Dotnet solution structure](2024-01-18-Dotnet-solution-structure.md)
-- [MSBuild operations](2024-01-19-MSBuild-operations.md)
+- [MSBuild operations](./2024-01-19-MSBuild-operations.md)
 - Shared output directory
 
 ---

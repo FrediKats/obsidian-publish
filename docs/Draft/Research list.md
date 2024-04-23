@@ -1,0 +1,2 @@
+- [ ] Изучить возможность использовать https://github.com/ObsidianPublisher/obsidian-github-publisher для [публикации Obsidian](../Knowledge%20base/Tools/Obsidian/Obsidian.md#Publish)
+- [ ] Ознакомиться [Obsidian плагином](../Knowledge%20base/Tools/Obsidian/Obsidian.md#Plugins) [GitHub - blacksmithgu/obsidian-dataview: A high-performance data index and query language over Markdown files, for https://obsidian.md/.](https://github.com/blacksmithgu/obsidian-dataview)

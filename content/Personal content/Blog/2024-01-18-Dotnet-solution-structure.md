@@ -1,3 +1,7 @@
+---
+title: Dotnet solution structure
+---
+
 Большинство инструментов, которые Microsoft делают для dotnet можно назвать "It's just work". Но иногда стандартной конфигурации недостаточно и приходиться более подробно разбираться в проблеме. Этот пост как раз о том, как стандартного процесса сборки солюшена оказалось недостаточно и пришлось его пересоздать. И заодно узнать много нового про билд процесс.
 
 - Dotnet solution structure
@@ -8,7 +12,7 @@
 ### Структура солюшена
 Перед тем, как погрузиться в особенности работы билд процесса нужно понять что является входными аргументами этого процесса.
 
-Если очень сильно обобщить и упроситить, то исходный код C# приложения имеет [структуру](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20project%20system.md):
+Если очень сильно обобщить и упроситить, то исходный код C# приложения имеет [структуру](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20project%20system.md):
 ```
 SolutionDirectory/
 	ProjectName/
@@ -18,10 +22,10 @@ SolutionDirectory/
 	Directory.Build.targets
 ```
 
-Структура сформировалась вокруг необходимости группировать и разделять исходный код. С одной стороны, приложение - это много код, который удобно было бы держать в разных файлах. А процесс сборки соответственно требует сборки всех файлов вместе. Для реализации такого объединения существуют [проекты](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20project.md).
-С другой стороны, код нужно разделять на компоненты и блоки, а значит хочется иметь несколько проектов. Но всё ещё остаётся необходимость собирать все эти проекты вместе. Для объединения проектов существуют [солюшены](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20solution.md), `.sln`  файлы.
+Структура сформировалась вокруг необходимости группировать и разделять исходный код. С одной стороны, приложение - это много код, который удобно было бы держать в разных файлах. А процесс сборки соответственно требует сборки всех файлов вместе. Для реализации такого объединения существуют [проекты](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20project.md).
+С другой стороны, код нужно разделять на компоненты и блоки, а значит хочется иметь несколько проектов. Но всё ещё остаётся необходимость собирать все эти проекты вместе. Для объединения проектов существуют [солюшены](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20solution.md), `.sln`  файлы.
 
-Корень структуры - это [солюшен](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20solution.md), `.sln` файл, который содержит ссылки на добавленные в него проекты (`.csproj` файлы). Они описываются так:
+Корень структуры - это [солюшен](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20solution.md), `.sln` файл, который содержит ссылки на добавленные в него проекты (`.csproj` файлы). Они описываются так:
 
 ```
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") =
@@ -32,12 +36,12 @@ EndProject
 ```
 
 где:
-- "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}" - это [тип проекта](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20project.md#Project%20type%20ID)
+- "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}" - это [тип проекта](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20project.md#Project%20type%20ID)
 - "ProjectName" - название проекта, как он отображается при открытии IDE
 - "ProjectName\ProjectName.csproj" - путь к файлу .csproj относительно .sln
 - "{E8F01267-DA18-42DC-9859-423209B99F3B}" - идентификатор проекта, сгенерированный GUID
 
-Солюшены поддерживают возможность создавать [директории](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20solution.md#Directory), которые используются для структурирования проектов в иерархию. Структура директорий в солюшене не привязывается к расположении проектов на файловой системе. 
+Солюшены поддерживают возможность создавать [директории](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20solution.md#Directory), которые используются для структурирования проектов в иерархию. Структура директорий в солюшене не привязывается к расположении проектов на файловой системе. 
 
 Например, солюшен состоит из 8 проектов, из которых 3 - это тесты. Для них можно создать директорию Tests и иметь такую структуру:
 ```
@@ -66,7 +70,7 @@ GlobalSection(NestedProjects) = preSolution
 ```
 
 ### Конфигурация солюшена
-Ещё одна секция в sln файле - это описание [конфигураций и платформ](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20build%20configuration%20and%20platform.md) солюшена:
+Ещё одна секция в sln файле - это описание [конфигураций и платформ](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20build%20configuration%20and%20platform.md) солюшена:
 ```
 GlobalSection(SolutionConfigurationPlatforms) = preSolution
 	Debug|Any CPU = Debug|Any CPU
@@ -86,7 +90,7 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 Вторая строка указывает на необходимость собирать проект. Если её убрать, то при сборке солюшена в "Debug|Any CPU" данный проект не будет собираться совсем. Пример использования: убрать тестовые проекты из процесса сборки при выбранной Release конфигурации.
 
 ### Структура проекта
-[[Dotnet project|`.csproj` файлы]] имеют более сложную судьбу. Существует [два формата их описания](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20project.md#File%20format). Первый формат был создан для .NET Framework. Этот формат можно опознать по объявлению Project ноды:
+[[Dotnet project|`.csproj` файлы]] имеют более сложную судьбу. Существует [два формата их описания](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20project.md#File%20format). Первый формат был создан для .NET Framework. Этот формат можно опознать по объявлению Project ноды:
 
 ```
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -98,9 +102,9 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 <Project Sdk="Microsoft.NET.Sdk">
 ```
 
-Новый формат позиционировался как замена, поэтому все они имел схожий набор возможностей. Но поведение у них отличалось. Например, в старом формате записи требуется явно указывать все файлы, которые нужно скомпилировать. А вместе с выходом SDK-style появилось и стало использоваться по умолчанию свойство [EnableDefaultItems](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20project.md#EnableDefaultItems), которое автоматически добавляло все \*.cs файлы в проект и в процесс компиляции.
+Новый формат позиционировался как замена, поэтому все они имел схожий набор возможностей. Но поведение у них отличалось. Например, в старом формате записи требуется явно указывать все файлы, которые нужно скомпилировать. А вместе с выходом SDK-style появилось и стало использоваться по умолчанию свойство [EnableDefaultItems](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20project.md#EnableDefaultItems), которое автоматически добавляло все \*.cs файлы в проект и в процесс компиляции.
 
-Одним из основных элементов `.csproj` файла являются [Properties](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20project.md#Properties). Properties - это пары ключ-значение. В csproj файлы свойства указываются внутри ноды PropertyGroup:
+Одним из основных элементов `.csproj` файла являются [Properties](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20project.md#Properties). Properties - это пары ключ-значение. В csproj файлы свойства указываются внутри ноды PropertyGroup:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -113,12 +117,12 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 
 Пример такой пары - указание версии dotnet'а `<TargetFramework>netstandard2.0</TargetFramework>`. В качестве ключа могут выступать не только стандартные имена свойств, которые заданы Microsoft'ом, но и любые пользовательские данные, которые можно использовать в качестве "переменных для MSBuild'а".
 
-При описании свойств можно ссылаться на другие свойства используя специальный синтаксис. Например, OutputPath позволяет указывать путь, куда будут складываться [результаты сборки](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20artifact%20directories.md). По умолчанию это `/bin/debug/net8/...`.  При этом использование debug определяется выбранной конфигурацией и для Release будет использоваться Release. Записать это в csproj можно так:
+При описании свойств можно ссылаться на другие свойства используя специальный синтаксис. Например, OutputPath позволяет указывать путь, куда будут складываться [результаты сборки](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20artifact%20directories.md). По умолчанию это `/bin/debug/net8/...`.  При этом использование debug определяется выбранной конфигурацией и для Release будет использоваться Release. Записать это в csproj можно так:
 ```xml
 <OutputPath>bin/$(Configuration)/$(TargetFramework)/</OutputPath>
 ```
 
-Property можно дополнять условиями. Например, есть GeneratePackageOnBuild, которое указывает на то, нужно ли генерировать [.nupkg файл](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Nuget/%D0%A4%D0%B0%D0%B9%D0%BB%20.nupkg.md) при сборке проекта. Чтобы включить генерацию, нужно прописать `<GeneratePackageOnBuild>True</GeneratePackageOnBuild>`. Но может появится запрос на то, чтобы генерировать файл только при сборке в Release конфигурации. Добиться такого можно таким изменением:
+Property можно дополнять условиями. Например, есть GeneratePackageOnBuild, которое указывает на то, нужно ли генерировать [.nupkg файл](../../Knowledge%20base/Developing/Dotnet/Nuget/%D0%A4%D0%B0%D0%B9%D0%BB%20.nupkg.md) при сборке проекта. Чтобы включить генерацию, нужно прописать `<GeneratePackageOnBuild>True</GeneratePackageOnBuild>`. Но может появится запрос на то, чтобы генерировать файл только при сборке в Release конфигурации. Добиться такого можно таким изменением:
 
 ```xml
 <GeneratePackageOnBuild Condition="$(Configuration) == 'Release'">True</GeneratePackageOnBuild>

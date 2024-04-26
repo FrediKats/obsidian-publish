@@ -1,3 +1,7 @@
+---
+title: Disposing and CA2000
+---
+
 IDisposing - это интерфейс с единственным методом Dispose. Концептуально этот метод нужен для того, чтобы выполнить код после того, как объект перестанет использоваться. Пример ситуации, когда это необходимо - это работа с внешними ресурсами. При создании некоторых объектов для работы с файлами, приложение захватывает файловый дескриптор у операционной системы и не даёт другим приложениям работать с файлом, пока приложение не даст сигнал, что дескриптор больше не удерживается.
 
 ```csharp
@@ -71,7 +75,7 @@ using (var value = new MyType())
 - Обернут код в конструкторе в try/catch и вызывать Dispose
 ## Dispose objects before losing scope (CA2000)
 
-Существует несколько стандартных [Roslyn анализаторов](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Roslyn/Roslyn%20analyzers.md), которые находят проблемы с использованием [IDisposable](../../Knowledge%20base/Developing/Code/Languages/Dotnet/CSharp/Instance%20disposing.md):
+Существует несколько стандартных [Roslyn анализаторов](../../Knowledge%20base/Developing/Dotnet/Roslyn/Roslyn%20analyzers.md), которые находят проблемы с использованием [IDisposable](../../Knowledge%20base/Developing/Dotnet/CSharp/Instance%20disposing.md):
 - CA2000
 - CA2213
 
@@ -129,7 +133,7 @@ public void M2()
 ```
 
 Второй способ - это конфигурации анализатора с помощь `dispose_ownership_transfer_at_constructor` и `dispose_ownership_transfer_at_method_call`.
-При выставлении `at_constructor` [Roslyn Data flow analys](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Roslyn/Roslyn%20Data%20flow%20analys.md) будет считать, что для всех передаваемых IDisposable экземпляров также передаётся и ownership .
+При выставлении `at_constructor` [Roslyn Data flow analys](../../Knowledge%20base/Developing/Dotnet/Roslyn/Roslyn%20Data%20flow%20analys.md) будет считать, что для всех передаваемых IDisposable экземпляров также передаётся и ownership .
 ```csharp
 public void Method()
 {

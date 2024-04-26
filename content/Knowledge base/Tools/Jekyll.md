@@ -1,4 +1,4 @@
-Jekyll - это генератор статических сайт написанный на [Ruby](../Developing/Code/Languages/Ruby/Ruby.md).
+Jekyll - это генератор статических сайт написанный на [Ruby](../Developing/Ruby/Ruby.md).
 
 ## excerpt
 

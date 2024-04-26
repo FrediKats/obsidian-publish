@@ -1,3 +1,6 @@
+---
+title: MSBuild operations
+---
 
 Большинство инструментов, которые Microsoft делают для dotnet можно назвать "It's just work". Но иногда стандартной конфигурации недостаточно и приходиться более подробно разбираться в проблеме. Этот пост как раз о том, как стандартного процесса сборки солюшена оказалось недостаточно и пришлось его пересоздать. И заодно узнать много нового про билд процесс.
 
@@ -7,7 +10,7 @@
 
 ---
 ### MSBuild Structured Log
-Отправной точкой изучения [MSBuild](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild.md) являются логи сборки. MSBuild поддерживает не только обычное текстовое логирование, но и структурное логирование. Для включения структурного логирования нужно выполнять команды сборки с аргументом `-bl`. Например, чтобы собрать [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) и получить структурные логи, можно использовать такие команды:
+Отправной точкой изучения [MSBuild](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild.md) являются логи сборки. MSBuild поддерживает не только обычное текстовое логирование, но и структурное логирование. Для включения структурного логирования нужно выполнять команды сборки с аргументом `-bl`. Например, чтобы собрать [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) и получить структурные логи, можно использовать такие команды:
 ```cmd
 git clone --depth 1 https://github.com/dotnet/BenchmarkDotNet.git
 cd BenchmarkDotNet
@@ -18,14 +21,14 @@ dotnet build -bl:build.binlog BenchmarkDotNet.sln
 В результате будут сгенерированы `.binlog` файлы, которые можно открыть используя [MSBuildStructuredLog](https://github.com/KirillOsenkov/MSBuildStructuredLog) (`winget install KirillOsenkov.MSBuildStructuredLogViewer`).
 
 ### MSBuild tasks and targets
-[MSBuild](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild.md) (The Microsoft Build Engine) - это платформа для сборки dotnet приложений.
-Запустить сборку солюшена можно используя Visual Studio. Вместе с Visual Studio идёт msbuild.exe, который и отвечает за билд. Visual Studio использует .NET Framework реализацию MSBuild для загрузки и сборки проектов. Вместе с .NET Core появился альтернативный способ сборки - .NET Core реализация MSBuild, которая представлена [CLI командами](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/Dotnet%20CLI.md). Новая функциональность, которую добавляют в MSBuild появляется и в Framework и в Core реализации, но .Framework содержит ряд API, которое изнчально не было перенесено в Core. Но это специфичные вещи (такие как использование COM объектов) и в большинстве случаев солюшен можно собрать как из Visual Studio, так и CLI командой.
+[MSBuild](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild.md) (The Microsoft Build Engine) - это платформа для сборки dotnet приложений.
+Запустить сборку солюшена можно используя Visual Studio. Вместе с Visual Studio идёт msbuild.exe, который и отвечает за билд. Visual Studio использует .NET Framework реализацию MSBuild для загрузки и сборки проектов. Вместе с .NET Core появился альтернативный способ сборки - .NET Core реализация MSBuild, которая представлена [CLI командами](../../Knowledge%20base/Developing/Dotnet/Build%20process/Dotnet%20CLI.md). Новая функциональность, которую добавляют в MSBuild появляется и в Framework и в Core реализации, но .Framework содержит ряд API, которое изнчально не было перенесено в Core. Но это специфичные вещи (такие как использование COM объектов) и в большинстве случаев солюшен можно собрать как из Visual Studio, так и CLI командой.
 
-Команды dotnet restore и dotnet build представляют собой набор вызываемых [таргетов](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20target.md) и [тасок](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20task.md).
+Команды dotnet restore и dotnet build представляют собой набор вызываемых [таргетов](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20target.md) и [тасок](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20task.md).
 
-[тасок](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20task.md) - это единица выполнения в контексте MSBuild, которая выполняется во время сборки. MSBuild содержит ряд встроенных тасок (например, `<MakeDir Directories="$(BuildDir)" />`  для создания директории), а также предоставляет возможность создавать собственные таски.
+[тасок](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20task.md) - это единица выполнения в контексте MSBuild, которая выполняется во время сборки. MSBuild содержит ряд встроенных тасок (например, `<MakeDir Directories="$(BuildDir)" />`  для создания директории), а также предоставляет возможность создавать собственные таски.
 
-[таргетов](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20target.md) - это группы тасок, которые объединяются для реализации более сложных сценариев. Пример таргета, который вызывается во время `dotnet restore`:
+[таргетов](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20target.md) - это группы тасок, которые объединяются для реализации более сложных сценариев. Пример таргета, который вызывается во время `dotnet restore`:
 ```xml
 <Target Name="ValidateSolutionConfiguration">
 	<Error
@@ -115,7 +118,7 @@ Add item RestoreGraphProjectInputItems
 В данном примере `RestoreGraphProjectInputItems` - это название возвращаемого значения, которое прописано в Returns, а `VariableForReturnValues` - это переменная, куда значения нужно сохранить.
 ### dotnet restore: project.assets.json
 Основным таргетом команды рестора является RestoreTask. Задача RestoreTask - сформировать список используемых нюгет пакетов в проектах и загрузить их. Есть два основных артефакта работы этой таски:
-- [MSBuild artifact directories > project.assets.json](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20artifact%20directories.md#project.assets.json)] файлы для каждого проекта
+- [MSBuild artifact directories > project.assets.json](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20artifact%20directories.md#project.assets.json)] файлы для каждого проекта
 - Скачанные локально нюгеты в директории C:\\Users\\fredi\\.nuget\\packages\\
 
 Рассмотрим рестор на примере простого солюшена из 4 проектов:
@@ -191,7 +194,7 @@ microsoft.extensions.logging/
   </Target>
 ```
 
-Далее будет рассмотрен билд одного конкретного проекта - BenchmarkDotNet.IntegrationTests. Пропустим несколько не значимых тарегтов и начнём с ResolvePackageAssets. Основная задача этого таргета - сформировать список зависимостей, файлов, которые проект ожидает получить из нюгет пакетов. Для этого вызывается таска [ResolvePackageAssets](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20tasks%20ResolvePackageAssets.md):
+Далее будет рассмотрен билд одного конкретного проекта - BenchmarkDotNet.IntegrationTests. Пропустим несколько не значимых тарегтов и начнём с ResolvePackageAssets. Основная задача этого таргета - сформировать список зависимостей, файлов, которые проект ожидает получить из нюгет пакетов. Для этого вызывается таска [ResolvePackageAssets](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20tasks%20ResolvePackageAssets.md):
 
 ```xml
 <ResolvePackageAssets
@@ -287,7 +290,7 @@ microsoft.extensions.logging/
 - .dll и .exe файлы с результатами компиляции проекта
 - Добавленные в проект файлы, которые требуют Copy to output directory.
  
-### [obj](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20artifact%20directories.md#obj%20directory) и [bin](../../Knowledge%20base/Developing/Code/Languages/Dotnet/Build%20process/MSBuild%20artifact%20directories.md#bin%20directory) директории
+### [obj](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20artifact%20directories.md#obj%20directory) и [bin](../../Knowledge%20base/Developing/Dotnet/Build%20process/MSBuild%20artifact%20directories.md#bin%20directory) директории
 В процессе компиляции из исходного кода проекта создаётся dll. Происходит это в рамках таргета CoreCompile, где вызывается таска Csc. Одним из аргументов этой таски пеердаётся OutputAssembly - это путь, куда нужно сохранить скомпилированную dll. По умолчанию компиляция работает с obj директориями. При этом в obj директорию попадают только те файлы, которые были сгенерированы в процессе компиляции. Нет необходимости копировать туда зависимости, они указываются в csc как пути к .nuget/ или obj/ других проектов.
 
 Запустить dll из директории obj невозможно. Чтобы собранное приложение можно было запустить выполняется копирование этой длл и всех зависимостей в директорию bin. Для этого выполняется таргет CopyFilesToOutputDirectory.

@@ -1,4 +1,0 @@
-
-## dotnet restore
-
-## dotnet build

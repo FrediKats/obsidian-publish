@@ -9,7 +9,8 @@ title: Home
 Подписать на обновление можно в Telegram: https://github.com/FrediKats. По вопросам, пожеланиям и предложениям можно писать @FrediKats.
 
 Список последних постов:
-- [2024-05-05-Working-with-XML-via-syntax-tree](./Personal%20content/Blog/2024-05-05-Working-with-XML-via-syntax-tree.md)
+- [2024-05-12-Solution-configuration-as-a-package](./Personal%20content/Blog/2024-05-12-Solution-configuration-as-a-package.md)
+- [2024-05-09-Working-with-XML-via-syntax-tree](./Personal%20content/Blog/2024-05-09-Working-with-XML-via-syntax-tree.md)
 - [2024-01-21-Shared-output-directory-for-dotnet-projects](./Personal%20content/Blog/2024-01-21-Shared-output-directory-for-dotnet-projects.md)
 - [2024-01-19-MSBuild-operations](./Personal%20content/Blog/2024-01-19-MSBuild-operations.md)
 - [2024-01-18-Dotnet-solution-structure](./Personal%20content/Blog/2024-01-18-Dotnet-solution-structure.md)

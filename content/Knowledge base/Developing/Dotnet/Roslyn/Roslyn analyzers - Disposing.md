@@ -1,4 +1,8 @@
-Существует несколько стандартных [Roslyn анализаторов](../Roslyn%20analyzers.md), которые находят проблемы с использованием [IDisposable](../../CSharp/Instance%20disposing.md):
+---
+title: Roslyn Analyzers - Disposing
+---
+
+Существует несколько стандартных [Roslyn анализаторов](./Roslyn%20analyzers.md), которые находят проблемы с использованием [IDisposable](../CSharp/Instance%20disposing.md):
 - CA2000
 - CA2213
 ## Dispose objects before losing scope (CA2000)
@@ -57,7 +61,7 @@ public void M2()
 ```
 
 Второй способ - это конфигурации анализатора с помощь `dispose_ownership_transfer_at_constructor` и `dispose_ownership_transfer_at_method_call`.
-При выставлении `at_constructor` [Roslyn Data flow analys](../Roslyn%20Data%20flow%20analys.md) будет считать, что для всех передаваемых IDisposable экземпляров также передаётся и ownership .
+При выставлении `at_constructor` [Roslyn Data flow analys](./Roslyn%20Data%20flow%20analys.md) будет считать, что для всех передаваемых IDisposable экземпляров также передаётся и ownership .
 ```csharp
 public void Method()
 {
